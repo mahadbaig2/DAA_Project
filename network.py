@@ -1,7 +1,10 @@
 import networkx as nx
 import random
 
-def create_transport_network():
+
+def create_transport_network(seed=42):
+    """Create a deterministic transport network"""
+    random.seed(seed)
     G = nx.DiGraph()
 
     cities = [
@@ -12,15 +15,32 @@ def create_transport_network():
     for city in cities:
         G.add_node(city)
 
-    for _ in range(18):
-        u, v = random.sample(cities, 2)
-        distance = random.randint(100, 1500)  # km
-        speed = random.randint(60, 120)       # km/h
+    # Create edges ensuring connectivity
+    edges = [
+        ("Karachi", "Hyderabad", 150),
+        ("Karachi", "Quetta", 680),
+        ("Lahore", "Islamabad", 380),
+        ("Lahore", "Faisalabad", 130),
+        ("Lahore", "Multan", 340),
+        ("Islamabad", "Peshawar", 170),
+        ("Islamabad", "Lahore", 380),
+        ("Faisalabad", "Multan", 135),
+        ("Multan", "Quetta", 480),
+        ("Peshawar", "Islamabad", 170),
+        ("Quetta", "Multan", 480),
+        ("Multan", "Lahore", 340),
+        ("Karachi", "Multan", 900),
+        ("Faisalabad", "Islamabad", 300),
+        ("Karachi", "Lahore", 1200),
+    ]
 
-        G.add_edge(
-            u, v,
-            distance=distance,
-            time=distance / speed
-        )
+    for u, v, distance in edges:
+        if u in cities and v in cities:
+            speed = random.randint(70, 100)
+            G.add_edge(
+                u, v,
+                distance=distance,
+                time=distance / speed
+            )
 
     return G
