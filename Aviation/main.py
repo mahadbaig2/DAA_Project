@@ -122,6 +122,15 @@ with st.sidebar:
 
     run_button = st.button("🚀 Compare All Algorithms", type="primary", use_container_width=True)
 
+    if st.button("🔄 Clear Results", use_container_width=True):
+        if 'results' in st.session_state:
+            del st.session_state.results
+        if 'last_source' in st.session_state:
+            del st.session_state.last_source
+        if 'last_dest' in st.session_state:
+            del st.session_state.last_dest
+        st.rerun()
+
     st.divider()
 
     st.markdown("### 📚 Algorithm Info")
@@ -141,7 +150,15 @@ with st.sidebar:
 # Main content
 if run_button and source_airport != destination_airport:
     with st.spinner("🔍 Running all algorithms..."):
-        results = compare_all_algorithms(graph, source_airport, destination_airport)
+        st.session_state.results = compare_all_algorithms(graph, source_airport, destination_airport)
+        st.session_state.last_source = source_airport
+        st.session_state.last_dest = destination_airport
+
+# Check if we have results to display
+if 'results' in st.session_state and st.session_state.results:
+    results = st.session_state.results
+    source_airport = st.session_state.last_source
+    destination_airport = st.session_state.last_dest
 
     # Create tabs
     tab1, tab2, tab3 = st.tabs(["🗺️ Interactive Map", "📊 Comparison Dashboard", "🎓 Academic Analysis"])
@@ -412,25 +429,9 @@ if run_button and source_airport != destination_airport:
             No single "best" algorithm exists—choice depends on priorities.
             """)
 
-            st.markdown("### 📝 Viva Defense Points")
-            st.info("""
-            **Q: Why do results differ?**  
-            A: Each algorithm uses different weight functions (distance/cost/time) 
-            and edge attributes (layover penalties, fuel surcharges).
-
-            **Q: Which is most efficient?**  
-            A: Dijkstra for this scale (O(E log V)), but Bellman-Ford handles 
-            more complex cost models with penalties.
-
-            **Q: When use Floyd-Warshall?**  
-            A: When needing ALL pairs of shortest paths, or with frequent queries 
-            on the same network (amortized efficiency).
-            """)
-
 elif run_button:
     st.warning("⚠️ Please select different airports for source and destination")
-
-else:
+elif 'results' not in st.session_state:
     # Initial state - show network overview
     st.info("👆 Select airports from the sidebar and click 'Compare All Algorithms' to begin")
 
