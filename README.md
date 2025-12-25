@@ -109,10 +109,6 @@ Contributions welcome! Areas for enhancement:
 - More optimization algorithms (A*, Yen's K-shortest paths)
 - Enhanced cost models (seasonal pricing, airline alliances)
 
-## 📄 License
-
-MIT License - See LICENSE file for details
-
 ## 🙏 Acknowledgments
 
 - Airport coordinates and routing inspired by real aviation networks
